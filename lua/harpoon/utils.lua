@@ -38,6 +38,27 @@ function M.branch_key()
     end
 end
 
+function M.git_root_key()
+    local git_root
+
+    -- use tpope's fugitive for faster resolution if available
+    if vim.fn.exists("*FugitiveFind") == 1 then
+        git_root = vim.fn["FugitiveFind"](":/")
+    else
+        git_root = M.get_os_command_output({
+            "git",
+            "rev-parse",
+            "--show-toplevel",
+        })[1]
+    end
+
+    if git_root then
+        return git_root
+    else
+        return M.project_key()
+    end
+end
+
 function M.normalize_path(item)
     return Path:new(item):make_relative(M.project_key())
 end

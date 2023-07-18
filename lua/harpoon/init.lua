@@ -94,6 +94,8 @@ local function mark_config_key(global_settings)
     global_settings = global_settings or M.get_global_settings()
     if global_settings.mark_branch then
         return utils.branch_key()
+    elseif global_settings.mark_git_root then
+        return utils.git_root_key()
     else
         return utils.project_key()
     end
@@ -210,6 +212,7 @@ function M.setup(config)
             ["tmux_autoclose_windows"] = false,
             ["excluded_filetypes"] = { "harpoon" },
             ["mark_branch"] = false,
+            ["mark_git_root"] = false,
             ["tabline"] = false,
             ["tabline_suffix"] = "   ",
             ["tabline_prefix"] = "   ",
@@ -286,7 +289,17 @@ end
 
 function M.get_term_config()
     log.trace("get_term_config()")
-    return ensure_correct_config(HarpoonConfig).projects[utils.project_key()].term
+    local term_config_key
+
+    if
+        HarpoonConfig.global_settings.mark_git_root
+        and not HarpoonConfig.global_settings.mark_branch
+    then
+        term_config_key = utils.git_root_key()
+    else
+        term_config_key = utils.project_key()
+    end
+    return ensure_correct_config(HarpoonConfig).projects[term_config_key].term
 end
 
 function M.get_mark_config()

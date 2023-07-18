@@ -150,6 +150,10 @@ global_settings = {
     -- set marks specific to each git branch inside git repository
     mark_branch = false,
 
+    -- sets marks and cmds specific to a git repo's root directory
+    -- NOTE: this setting is ignored when mark_branch is enabled
+    mark_git_root = false,
+
     -- enable tabline with harpoon marks
     tabline = false,
     tabline_prefix = "   ",
